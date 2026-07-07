@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Projet Phoenix - suivi de transformation physique sur 90 jours">
+  <title>Projet Phoenix</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Transformation 90 jours</p>
+        <h1>Projet Phoenix</h1>
+        <p class="subtitle">Simple, local, progressif. Pas de compte, pas de cloud.</p>
+      </div>
+      <div class="day-pill">
+        <span id="dayNumber">Jour 1</span>
+        <small id="dayTotal">/ 90</small>
+      </div>
+    </header>
+
+    <main>
+      <section class="card dashboard-card">
+        <div class="section-title-row">
+          <h2>Tableau de bord</h2>
+          <button id="openSettingsBtn" class="ghost-button" type="button">Réglages</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <span>Poids actuel</span>
+            <strong id="currentWeight">84,0 kg</strong>
+          </div>
+          <div class="stat">
+            <span>Objectif</span>
+            <strong id="targetWeight">74,0 kg</strong>
+          </div>
+          <div class="stat">
+            <span>Perdu</span>
+            <strong id="lostWeight">0,0 kg</strong>
+          </div>
+          <div class="stat">
+            <span>Restant</span>
+            <strong id="remainingWeight">10,0 kg</strong>
+          </div>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-labels">
+            <span>Progression vers l’objectif</span>
+            <strong id="progressText">0 %</strong>
+          </div>
+          <div class="progress-bar" aria-label="Progression vers l’objectif">
+            <div id="progressFill"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="settingsPanel" class="card settings-card hidden">
+        <h2>Réglages du projet</h2>
+        <p class="hint">Ces informations restent stockées localement dans le navigateur de ton téléphone.</p>
+        <div class="form-grid">
+          <label>
+            Date de départ
+            <input id="startDateInput" type="date">
+          </label>
+          <label>
+            Durée du projet
+            <input id="durationInput" type="number" min="1" max="365" step="1">
+          </label>
+          <label>
+            Poids de départ
+            <input id="startWeightInput" type="number" min="30" max="250" step="0.1">
+          </label>
+          <label>
+            Objectif de poids
+            <input id="targetWeightInput" type="number" min="30" max="250" step="0.1">
+          </label>
+        </div>
+        <button id="saveSettingsBtn" class="primary-button" type="button">Enregistrer les réglages</button>
+      </section>
+
+      <section class="card">
+        <h2>Aujourd’hui</h2>
+
+        <form id="entryForm">
+          <label>
+            Date
+            <input id="entryDate" type="date" required>
+          </label>
+
+          <div class="form-grid">
+            <label>
+              Poids du jour
+              <input id="entryWeight" type="number" min="30" max="250" step="0.1" placeholder="ex : 83.7">
+            </label>
+            <label>
+              Tour de taille
+              <input id="entryWaist" type="number" min="40" max="200" step="0.1" placeholder="ex : 96">
+            </label>
+          </div>
+
+          <div class="habits">
+            <label class="check-card">
+              <input id="habitWater" type="checkbox">
+              <span>2 L d’eau</span>
+            </label>
+            <label class="check-card">
+              <input id="habitSteps" type="checkbox">
+              <span>8 000 pas</span>
+            </label>
+            <label class="check-card">
+              <input id="habitWorkout" type="checkbox">
+              <span>Séance de sport</span>
+            </label>
+            <label class="check-card">
+              <input id="habitCalories" type="checkbox">
+              <span>Calories respectées</span>
+            </label>
+            <label class="check-card">
+              <input id="habitNoSoda" type="checkbox">
+              <span>Pas de soda</span>
+            </label>
+            <label class="check-card">
+              <input id="habitSleep" type="checkbox">
+              <span>Sommeil suffisant</span>
+            </label>
+          </div>
+
+          <label>
+            Ressenti rapide
+            <textarea id="entryMood" rows="3" placeholder="Ex : bonne énergie, faim le soir, motivation correcte..."></textarea>
+          </label>
+
+          <button class="primary-button" type="submit">Enregistrer la journée</button>
+          <p id="saveMessage" class="save-message" role="status"></p>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-title-row">
+          <h2>Graphique</h2>
+          <span id="chartHint" class="hint">Poids</span>
+        </div>
+        <canvas id="weightChart" width="720" height="360" aria-label="Graphique de progression du poids"></canvas>
+      </section>
+
+      <section class="card">
+        <div class="section-title-row">
+          <h2>Historique</h2>
+          <button id="clearTodayBtn" class="ghost-button danger" type="button">Effacer le jour</button>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+
+      <section class="card">
+        <h2>Sauvegarde</h2>
+        <p class="hint">Pense à exporter régulièrement tes données. L’application ne synchronise rien.</p>
+        <div class="button-grid">
+          <button id="exportJsonBtn" class="secondary-button" type="button">Exporter JSON</button>
+          <button id="exportCsvBtn" class="secondary-button" type="button">Exporter CSV</button>
+          <label class="secondary-button file-button">
+            Importer JSON
+            <input id="importJsonInput" type="file" accept="application/json,.json">
+          </label>
+          <button id="resetBtn" class="danger-button" type="button">Réinitialiser</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Projet Phoenix V1 — données locales navigateur</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
